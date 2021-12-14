@@ -1,3 +1,11 @@
+/*
+ * ADVENT OF CODE 2021
+ * DAY 3
+ * https://adventofcode.com/2021/day/3
+ * 
+ * Daria Jeżowska, 252731 
+ */
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,21 +15,35 @@ using namespace std;
 void count(vector<string> &temp, int bitStart);
 int main()
 {
+    //wczytanie danych z pliku
     ifstream we;
-    we.open("input.txt");
+    string filename;
+    we.open("input.tnumberOfDatat");
+    cout << "File name is: ";
+    cin >> filename; 
+    we.open(filename);
+    
+    if(we.fail()) 
+    {
+        cout << "Wrong file name" << endl;
+        return 0;
+    }
+
     vector<string> values;
     string val;
     string gamma = "";
     int gamma_;
     int epsilion = 0;
-    int output = 0;
     string eps;
     vector<int> len;
-    int x = 1;
+    int numberOfData = 1;
+
+    //wczytanie pierwszego słowa, aby można było określić jego długość
+
     we >> val;
     values.push_back(val);
-    vector<int> aaa;
     len.resize(val.length());
+
     while(!we.eof())
     {
         for(int i = 0; i < val.length(); i++)
@@ -31,34 +53,40 @@ int main()
         }
         we >> val;
         values.push_back(val);
-        x++;
+        numberOfData++;
     }
     for(int i = 0; i < val.length(); i++)
     {
-        if(len[i] > (x - len[i])) gamma.append("1");
+       /* Jeśli jest wiecej jedynek niz zer pierwszą wartością gammy będzie 1
+        * W odwortnym przypadku będzie to 0
+        * Dodatkowo jest zmienną pomocniczą eps składającą się z samych jedynek,
+        * która pomoże obliczyć epsilion
+        */
+
+        if(len[i] > (numberOfData - len[i])) gamma.append("1");
         else gamma.append("0");
         eps.append("1");
     }
-    for(int i = 0; i < x; i++)
-    {
-        
-    }
+
+   /* Za pomocą funkcji stoi string jest konwertowany na liczbę binarną stringa na liczbę binarną
+    * w przypadku epsiliona wystarczy użyć maski bitowej o długość słowa gamma i odejmiemy 1 
+    * to wynikiem będzie liczba o długości słowa gamma, ale składająca się z samych jedynek
+    * czyli największa wartość dla danej ilości bitów
+    * jeśli na otrzymanej liczbie zostanie przeprowadzana operacja bitowa z zanegowaną gammą_ 
+    * to wynikiem będzie epsilion
+    * przykładowo: 1111 & ~(1010) = 0101 
+    * następnie epsilion i gamma są przez siebie mnożone i otrzymujemy wynik zadania
+    */
+
     gamma_ = stoi(gamma, 0, 2);
-    epsilion = stoi(eps, 0, 2) - gamma_;
-    output = gamma_ * epsilion;
-    cout << "Output: " << output;
     
+    epsilion = ((1 << gamma.length() - 1)  & ~gamma_);
+    cout << epsilion << endl;
+    cout << gamma_ << "g" << endl;
+    cout << "Output: " << gamma_ * epsilion;
+   
 
 }
 void count(vector<string> &temp, int bitStart)
 {
-    int zeros;
-    string a;
-    for(int i = 0; i < temp.size(); i++)
-    {
-        temp[i].erase(temp[i].begin(), temp[i].begin() + bitStart);
-        a = temp[i];
-        if(a[0] == '0') zeros ++; 
-    }
-
 }
